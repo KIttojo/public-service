@@ -12,8 +12,12 @@ import Payment from './Components/Payment';
 import Admin from './Components/Admin';
 
 function App() {
-  const [user, setUser] = useState({name: 'Test Name', role: 'admin'});
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [user, setUser] = useState({name: '', role: ''});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (user.name) setIsLoggedIn(true);
+  }, [user])
 
   return (
     <ChakraProvider theme={theme}>
