@@ -18,9 +18,8 @@ import React, {useState, setState, useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-export default function SimpleCard(props) {
+export default function SimpleCard({setUser}) {
   const navigate = useNavigate();
-  const setUser = props.setUser;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

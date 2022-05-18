@@ -38,9 +38,9 @@ function App() {
       <Routes>
         {isLoggedIn ? (
           <>
-            <Route path="/" element={<Home user={user} setUser={setUser}><History/></Home>} />
-            <Route path="/home" element={<Home user={user} setUser={setUser}><History/></Home>} />
-            <Route path="/home/history" element={<Home user={user} setUser={setUser}><History/></Home>} />
+            <Route path="/" element={<Home user={user} setUser={setUser}><History user={user}/></Home>} />
+            <Route path="/home" element={<Home user={user} setUser={setUser}><History user={user}/></Home>} />
+            <Route path="/home/history" element={<Home user={user} setUser={setUser}><History user={user}/></Home>} />
             <Route path="/home/payment" element={<Home user={user} setUser={setUser}><Payment/></Home>} />
             {user.role === 'admin' && (
               <Route path="/home/admin" element={<Home user={user} setUser={setUser}><Admin/></Home>} />

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios';
 import { 
   Box, 
   UnorderedList, 
@@ -30,8 +31,22 @@ const HistoryCard = () => {
   );
 };
 
-const History = () => {
-  const items = [1, 2, 3, 4];
+const History = ({user}) => {
+  const [items, setItems] = useState([1, 2, 3, 4]);
+  console.log('1111', items)
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/invoices', {
+      headers: { 'x-access-token': localStorage.getItem('token')},
+      params: {
+        role: user.role,
+        email: 'admin1@admin.com'
+      }
+    })
+      .then(res => setItems(res.data))
+      .catch(err => console.log(err))
+  }, []);
+
   return (
     <Box>
       <Heading my='5'>История платежей</Heading>
