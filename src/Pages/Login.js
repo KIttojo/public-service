@@ -12,9 +12,48 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { Link as RouterLink } from "react-router-dom";
 
-export default function SimpleCard() {
+import { Link as RouterLink } from "react-router-dom";
+import React, {useState, setState, useEffect} from 'react';
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+
+export default function SimpleCard(props) {
+  const navigate = useNavigate();
+  const setUser = props.setUser;
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSumbit = (e) => {
+    e.preventDefault();
+    axios({
+      url: "http://localhost:8080/api/authenticate",
+      method: "post",
+      data: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res.data);
+          setUser({name: `${res.data.user.firstName} ${res.data.user.lastName}`, role: res.data.user.role});
+          navigate('/');
+        } else {
+          const error = new Error(res.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error logging in please try again');
+      });
+  }
+
   return (
     <Flex
       minH={'100vh'}
@@ -31,11 +70,21 @@ export default function SimpleCard() {
           <Stack spacing={4}>
             <FormControl id="text">
               <FormLabel>Логин</FormLabel>
-              <Input type="email" />
+              <Input 
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required 
+              />
             </FormControl>
             <FormControl id="password">
               <FormLabel>Пароль</FormLabel>
-              <Input type="password" />
+              <Input 
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required 
+              />
             </FormControl>
             <Stack spacing={10}>
               <Stack
@@ -52,7 +101,8 @@ export default function SimpleCard() {
                 color={'white'}
                 _hover={{
                   bg: 'blue.500',
-                }}>
+                }}
+                onClick={handleSumbit}>
                 Войти
               </Button>
             </Stack>
