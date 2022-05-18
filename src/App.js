@@ -17,6 +17,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+    if (!user.name) setIsLoggedIn(false);
     if (user.name) setIsLoggedIn(true);
     else {
       axios.get('http://localhost:8080/checkToken', {
