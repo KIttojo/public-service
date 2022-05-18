@@ -40,6 +40,8 @@ export default function Payment() {
     });
   }
 
+  const userData = JSON.parse(localStorage.getItem('user-data')).user;
+
   return (
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
       <Flex p={8} flex={1} justify={'center'}>
@@ -47,11 +49,11 @@ export default function Payment() {
           <Heading fontSize={'2xl'}>Оплата счета</Heading>
           <FormControl id="text">
             <FormLabel>Полное имя</FormLabel>
-            <Input type="text" onChange={(e) => updateForm('name', e.target.value)}/>
+            <Input value={`${userData.firstName} ${userData.lastName}`} type="text" onChange={(e) => updateForm('name', e.target.value)}/>
           </FormControl>
           <FormControl id="text">
             <FormLabel>Адрес</FormLabel>
-            <Input type="text" onChange={(e) => updateForm('addres', e.target.value)}/>
+            <Input value={`${userData.address}`} type="text" onChange={(e) => updateForm('addres', e.target.value)}/>
           </FormControl>
 
           <Stack
