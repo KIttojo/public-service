@@ -10,6 +10,7 @@ import NotFound from './Pages/Error';
 import History from './Components/History';
 import Payment from './Components/Payment';
 import Admin from './Components/Admin';
+import axios from 'axios';
 
 function App() {
   const [user, setUser] = useState({name: '', role: ''});
@@ -17,6 +18,19 @@ function App() {
 
   useEffect(() => {
     if (user.name) setIsLoggedIn(true);
+    else {
+      axios.get('http://localhost:8080/checkToken', {
+      headers: {
+        'x-access-token': localStorage.getItem('token'),
+      }
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          const userData = JSON.parse(localStorage.getItem('user-data'));
+          setUser({name: `${userData.user.firstName} ${userData.user.lastName}`, role: userData.user.role});
+        }
+      });
+    }
   }, [user])
 
   return (
