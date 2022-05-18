@@ -119,6 +119,11 @@ const NavItem = ({ icon, children, ...rest }) => {
 };
 
 const MobileNav = ({ onOpen, user, setUser }) => {
+  const logout = () => {
+    localStorage.clear();
+    setUser({name: '', role: ''});
+  }
+
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -185,7 +190,9 @@ const MobileNav = ({ onOpen, user, setUser }) => {
               borderColor={useColorModeValue('gray.200', 'gray.700')}>
               <MenuItem>Профиль</MenuItem>
               <MenuDivider />
-              <MenuItem>Выйти</MenuItem>
+              <MenuItem
+                onClick={logout}
+              >Выйти</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
