@@ -15,10 +15,22 @@ import axios from 'axios';
 function App() {
   const [user, setUser] = useState({name: '', role: ''});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [rates, setRates] = useState([]);
 
   useEffect(() => {
     if (!user.name) setIsLoggedIn(false);
-    if (user.name) setIsLoggedIn(true);
+    if (user.name) {
+      setIsLoggedIn(true);
+      axios.get('http://localhost:8080/api/rates', {
+        headers: {
+          'x-access-token': localStorage.getItem('token'),
+        }
+      })
+        .then((res) => {
+          setRates(res.data.rates);
+          console.log(rates);
+      })
+    } 
     else {
       axios.get('http://localhost:8080/checkToken', {
       headers: {
@@ -42,7 +54,7 @@ function App() {
             <Route path="/" element={<Home user={user} setUser={setUser}><History user={user}/></Home>} />
             <Route path="/home" element={<Home user={user} setUser={setUser}><History user={user}/></Home>} />
             <Route path="/home/history" element={<Home user={user} setUser={setUser}><History user={user}/></Home>} />
-            <Route path="/home/payment" element={<Home user={user} setUser={setUser}><Payment/></Home>} />
+            <Route path="/home/payment" element={<Home user={user} setUser={setUser}><Payment rates={rates}/></Home>} />
             {user.role === 'admin' && (
               <Route path="/home/admin" element={<Home user={user} setUser={setUser}><Admin/></Home>} />
             )}
