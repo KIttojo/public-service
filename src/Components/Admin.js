@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios';
 import { 
   Box, 
   UnorderedList, 
@@ -12,46 +13,63 @@ import {
   Divider 
 } from '@chakra-ui/react';
 
-const HistoryCard = () => { 
+const HistoryCard = ({address, cost, createdAt, email, firstname, lastname, type, value}) => { 
   return (
     <Box p='4' my='3' maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden'>
       <Heading as='h4' size='md'>
         Пользователь
       </Heading>
       <UnorderedList>
-        <ListItem>Имя Фамилия</ListItem>
-        <ListItem>Адрес проживания</ListItem>
+        <ListItem>{`${firstname} ${lastname}`}</ListItem>
+        <ListItem>{address}</ListItem>
+        <ListItem>{email}</ListItem>
       </UnorderedList>
       <Divider my='5'/>
       <Heading as='h4' size='md'>
         Информация
       </Heading>
       <UnorderedList>
-        <ListItem>Адрес</ListItem>
-        <ListItem>Тип показания</ListItem>
-        <ListItem>Измерения</ListItem>
+        <ListItem>{type}</ListItem>
+        <ListItem>{value}</ListItem>
       </UnorderedList>
       <Box mt='4'>
         <Stat>
           <StatLabel>К оплате</StatLabel>
-          <StatNumber>0.00₽</StatNumber>
-          <StatHelpText>Дата: 12.12.2022</StatHelpText>
+          <StatNumber>{cost}₽</StatNumber>
+          <StatHelpText>Дата: {createdAt}</StatHelpText>
         </Stat>
       </Box>
       <Tag colorScheme='green'>Оплачено</Tag>
-      <Tag colorScheme='yellow'>Ожидает оплаты</Tag>
+      {/* <Tag colorScheme='yellow'>Ожидает оплаты</Tag> */}
     </Box>
   );
 };
 
 const Admin = () => {
-  const items = [1, 2, 3, 4];
+  const [items, setItems] = useState([1, 2, 3, 4]);
+  console.log('1111', items)
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/invoices', {
+      headers: { 'x-access-token': localStorage.getItem('token')},
+    })
+      .then(res => setItems(res.data))
+      .catch(err => console.log(err))
+  }, []);
   return (
     <Box>
       <Heading my='5'>История платежей</Heading>
       {items.map((item, index) => {
         return <React.Fragment key={index}>
-          <HistoryCard />
+          <HistoryCard 
+            address={item.address} 
+            cost={item.cost} 
+            createdAt={item.created_at} 
+            email={item.email} 
+            firstname={item.firstname} 
+            lastname={item.lastname} 
+            type={item.type} 
+            value={item.value}/>
         </React.Fragment>
       })}
     </Box>

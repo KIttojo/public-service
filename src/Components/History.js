@@ -11,20 +11,20 @@ import {
   Heading
 } from '@chakra-ui/react';
 
-const HistoryCard = () => {
+const HistoryCard = ({address, cost, createdAt, email, firstname, lastname, type, value}) => {
   return (
     <Box p='4' my='3' maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden'>
       <UnorderedList>
-        <ListItem>Адрес</ListItem>
-        <ListItem>Тип показания</ListItem>
-        <ListItem>Измерения</ListItem>
+        <ListItem>Адрес: {address}</ListItem>
+        <ListItem>Тип показания: {type}</ListItem>
+        <ListItem>Измерения {value}</ListItem>
         <ListItem>Оплачено</ListItem>
       </UnorderedList>
       <Box mt='4'>
         <Stat>
           <StatLabel>Итого оплачено</StatLabel>
-          <StatNumber>0.00₽</StatNumber>
-          <StatHelpText>Дата: 12.12.2022</StatHelpText>
+          <StatNumber>{cost}₽</StatNumber>
+          <StatHelpText>Дата: {createdAt}</StatHelpText>
         </Stat>
       </Box>
     </Box>
@@ -52,7 +52,15 @@ const History = ({user}) => {
       <Heading my='5'>История платежей</Heading>
       {items.map((item, index) => {
         return <React.Fragment key={index}>
-          <HistoryCard />
+          <HistoryCard 
+            address={item.address} 
+            cost={item.cost} 
+            createdAt={item.created_at} 
+            email={item.email} 
+            firstname={item.firstname} 
+            lastname={item.lastname} 
+            type={item.type} 
+            value={item.value}/>
         </React.Fragment>
       })}
     </Box>

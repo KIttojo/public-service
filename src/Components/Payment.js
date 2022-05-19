@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -29,6 +30,8 @@ const initFormField = {
 };
 
 export default function Payment({rates}) {
+  const navigate = useNavigate();
+
   const userData = JSON.parse(localStorage.getItem('user-data')).user;
   const {firstName, lastName, address} = userData;
   const [formData, setFormData] = useState({
@@ -127,7 +130,7 @@ export default function Payment({rates}) {
         }
       )
       .then(res => {
-        console.log(res);
+        navigate('/');
       })
       .catch(err => {
         console.log(err);
@@ -159,9 +162,9 @@ export default function Payment({rates}) {
                   id='country' 
                   placeholder='Выберите тип' 
                   onChange={(e) => updateForm('states', e.target.value, 'key', id)}>
-                  <option value="gas">Газ</option>
-                  <option value="electricity">Электричество</option>
-                  <option value="water">Вода</option>
+                  <option >Газ</option>
+                  <option >Электричество</option>
+                  <option >Вода</option>
                 </Select>
               </FormControl>
               <FormControl maxW='140'>
@@ -207,7 +210,7 @@ export default function Payment({rates}) {
               shadow="base">
               <VStack spacing={5}>
 
-              <Heading fontSize={'2xl'}>Итого к оплате: {total}</Heading>
+              <Heading fontSize={'2xl'}>Итого к оплате: {total}₽</Heading>
 
                 <FormControl isRequired>
                   <FormLabel>Номер карты</FormLabel>
