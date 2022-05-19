@@ -22,7 +22,7 @@ import {
 } from '@chakra-ui/react';
 import { BsPerson } from 'react-icons/bs';
 import axios from 'axios';
-// import { MdOutlineEmail } from 'react-icons/md';
+import PriceTable from './PriceListTable';
 
 const initFormField = {
   type: '',
@@ -141,6 +141,8 @@ export default function Payment({rates}) {
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
       <Flex p={8} flex={1} justify={'center'}>
         <Stack spacing={4} w={'full'} maxW={'md'}>
+          <PriceTable rates={rates}/>
+
           <Heading fontSize={'2xl'}>Оплата счета</Heading>
           <FormControl id="text">
             <FormLabel>Полное имя</FormLabel>

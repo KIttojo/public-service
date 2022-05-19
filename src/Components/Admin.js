@@ -10,8 +10,10 @@ import {
   StatHelpText,
   Heading,
   Tag,
-  Divider 
+  Divider,
+  Flex
 } from '@chakra-ui/react';
+import PriceTable from './AdminPriceTable';
 
 const HistoryCard = ({address, cost, createdAt, email, firstname, lastname, type, value}) => { 
   return (
@@ -57,22 +59,25 @@ const Admin = () => {
       .catch(err => console.log(err))
   }, []);
   return (
-    <Box>
-      <Heading my='5'>История платежей</Heading>
-      {items.map((item, index) => {
-        return <React.Fragment key={index}>
-          <HistoryCard 
-            address={item.address} 
-            cost={item.cost} 
-            createdAt={item.created_at} 
-            email={item.email} 
-            firstname={item.firstname} 
-            lastname={item.lastname} 
-            type={item.type} 
-            value={item.value}/>
-        </React.Fragment>
-      })}
-    </Box>
+    <Flex justify={'space-around'}>
+      <Box>
+        <Heading my='5'>История платежей</Heading>
+        {items.map((item, index) => {
+          return <React.Fragment key={index}>
+            <HistoryCard 
+              address={item.address} 
+              cost={item.cost} 
+              createdAt={item.created_at} 
+              email={item.email} 
+              firstname={item.firstname} 
+              lastname={item.lastname} 
+              type={item.type} 
+              value={item.value}/>
+          </React.Fragment>
+        })}
+      </Box>
+      <PriceTable />
+    </Flex>
   );
 }
 
