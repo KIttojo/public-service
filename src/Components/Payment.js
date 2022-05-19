@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Box,
   Button,
@@ -20,6 +20,7 @@ import {
   Text
 } from '@chakra-ui/react';
 import { BsPerson } from 'react-icons/bs';
+import axios from 'axios';
 // import { MdOutlineEmail } from 'react-icons/md';
 
 const initFormField = {
@@ -27,7 +28,7 @@ const initFormField = {
   count: '10',
 };
 
-export default function Payment() {
+export default function Payment({rates}) {
   const userData = JSON.parse(localStorage.getItem('user-data')).user;
   const {firstName, lastName, address} = userData;
   const [formData, setFormData] = useState({
@@ -37,8 +38,22 @@ export default function Payment() {
   });
   const [showPayment, setShowPayment] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [total, setTotal] = useState(0);
 
   console.log("FORM=", formData.states);
+
+  const calulateTotalPrice = () => {
+    let totalPrice = 0;
+    for (const item of formData.states) {
+      totalPrice += item.cost; 
+    }
+    setTotal(totalPrice);
+  }
+
+  const calculateCost = (type, value) => {
+    const typeRate = rates.find((elem) => elem.latinName === type);
+    return typeRate.price * value;
+  }
 
   const updateForm = (type, value, key, id) => {
     setFormData(prev => {
@@ -49,6 +64,7 @@ export default function Payment() {
           type: isKey ? value : newStates[id].type,
           value: isKey ? newStates[id].value : value,
         }
+        newItem.cost = newItem.type && newItem.value ? calculateCost(newItem.type, newItem.value) : 0;
         newStates[id] = newItem;
         return {
           ...prev,
@@ -84,6 +100,7 @@ export default function Payment() {
 
   const handleSublit = () => {
     let errorsCount = 0;
+    calulateTotalPrice();
 
     for (let i = 0; i < formData.states.length; i++) {
       const element = formData.states[i];
@@ -98,6 +115,24 @@ export default function Payment() {
       setShowPayment(true);
     }
   }
+
+  const handlePayment = () => {
+    console.log(formData.states);
+    axios.post('http://localhost:8080/api/invoices',
+        {
+          invoices: formData.states,
+        },
+        {
+          headers: { 'x-access-token': localStorage.getItem('token') },
+        }
+      )
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   return (
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
@@ -124,9 +159,9 @@ export default function Payment() {
                   id='country' 
                   placeholder='Выберите тип' 
                   onChange={(e) => updateForm('states', e.target.value, 'key', id)}>
-                  <option>Газ</option>
-                  <option>Электричество</option>
-                  <option>Вода</option>
+                  <option value="gas">Газ</option>
+                  <option value="electricity">Электричество</option>
+                  <option value="water">Вода</option>
                 </Select>
               </FormControl>
               <FormControl maxW='140'>
@@ -137,6 +172,12 @@ export default function Payment() {
                     <NumberIncrementStepper />
                     <NumberDecrementStepper />
                   </NumberInputStepper>
+                </NumberInput>
+              </FormControl>
+              <FormControl maxW='100'>
+                <FormLabel htmlFor='amount'>Цена</FormLabel>
+                <NumberInput isDisabled value={item.cost} defaultValue={0}>
+                  <NumberInputField id='cost'/>
                 </NumberInput>
               </FormControl>
             </Stack>
@@ -165,6 +206,9 @@ export default function Payment() {
               color={'whiteAlpha.900'}
               shadow="base">
               <VStack spacing={5}>
+
+              <Heading fontSize={'2xl'}>Итого к оплате: {total}</Heading>
+
                 <FormControl isRequired>
                   <FormLabel>Номер карты</FormLabel>
                   <InputGroup>
@@ -195,7 +239,8 @@ export default function Payment() {
                   color="white"
                   _hover={{
                     bg: 'blue.500',
-                  }}>
+                  }}
+                  onClick={handlePayment}>
                   Оплатить
                 </Button>
               </VStack>
