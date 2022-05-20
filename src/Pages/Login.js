@@ -39,9 +39,7 @@ export default function SimpleCard({setUser}) {
     })
       .then(res => {
         if (res.status === 200) {
-          console.log(res.data);
           setUser({name: `${res.data.user.firstName} ${res.data.user.lastName}`, role: res.data.user.role});
-          console.log(res.headers);
           localStorage.setItem('token', res.headers['x-token']);
           localStorage.setItem('user-data', JSON.stringify(res.data));
           navigate('/');

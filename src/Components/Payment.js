@@ -3,17 +3,11 @@ import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
-  Select,
   Flex,
   FormControl,
   FormLabel,
   Heading,
   Input,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   Stack,
   VStack,
   InputGroup,
@@ -23,10 +17,11 @@ import {
 import { BsPerson } from 'react-icons/bs';
 import axios from 'axios';
 import PriceTable from './PriceListTable';
+import FormField from './FormField';
 
 const initFormField = {
   type: '',
-  count: '10',
+  count: '1',
 };
 
 export default function Payment({rates}) {
@@ -53,7 +48,6 @@ export default function Payment({rates}) {
       });
   },[]);
 
-  console.log("FORM=", formData.states);
 
   const calulateTotalPrice = () => {
     let totalPrice = 0;
@@ -65,7 +59,6 @@ export default function Payment({rates}) {
 
   const calculateCost = (type, value) => {
     const pastVal = pastValues[type];
-    console.log(pastVal);
     const typeRate = rates.find((elem) => elem.latinName === type);
     if ((typeRate.price * (value - pastVal)) < 0) setHasError(true);
     else setHasError(false);
@@ -105,7 +98,6 @@ export default function Payment({rates}) {
   const removeField = () => {
     setFormData(prev => {
       const newArr = [...prev.states];
-      console.log('old=', newArr)
       newArr.pop();
 
       return {
@@ -134,7 +126,6 @@ export default function Payment({rates}) {
   }
 
   const handlePayment = () => {
-    console.log(formData.states);
     axios.post('http://localhost:8080/api/invoices',
         {
           invoices: formData.states,
@@ -146,9 +137,6 @@ export default function Payment({rates}) {
       .then(res => {
         navigate('/');
       })
-      .catch(err => {
-        console.log(err);
-      });
   };
 
   return (
@@ -167,39 +155,18 @@ export default function Payment({rates}) {
             <Input isDisabled value={`${address}`} type="text" onChange={(e) => updateForm('addres', e.target.value)}/>
           </FormControl>
 
-          {formData.states.map((item, id) => 
-            <Stack
-              direction={{ base: 'column', sm: 'row' }}
-              align={'start'}
-              justify={'space-between'}>
-              <FormControl>
-                <FormLabel htmlFor='country'>Тип показания</FormLabel>
-                <Select 
-                  id='country' 
-                  placeholder='Выберите тип' 
-                  onChange={(e) => updateForm('states', e.target.value, 'key', id)}>
-                  <option >Газ</option>
-                  <option >Электричество</option>
-                  <option >Вода</option>
-                </Select>
-              </FormControl>
-              <FormControl maxW='140'>
-                <FormLabel htmlFor='amount'>Значение</FormLabel>
-                <NumberInput defaultValue={1} max={100000} min={1} onChange={val => updateForm('states', val, 'value', id)}>
-                  <NumberInputField id='amount'/>
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </FormControl>
-              <FormControl maxW='100'>
-                <FormLabel htmlFor='amount'>Цена</FormLabel>
-                <NumberInput isDisabled value={item.cost} defaultValue={0}>
-                  <NumberInputField id='cost'/>
-                </NumberInput>
-              </FormControl>
-            </Stack>
+          {formData.states.map((item, id) => {
+            console.log(pastValues[item.type])
+            return (
+              <FormField 
+                item={item} 
+                id={id} 
+                updateForm={updateForm}
+                pastValues={pastValues}
+                formData={formData}
+              />
+            );
+          }
           )}
 
           <Flex justify='space-between'>

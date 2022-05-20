@@ -28,7 +28,6 @@ function App() {
       })
         .then((res) => {
           setRates(res.data.rates);
-          console.log("RATES=,", res.data.rates);
       })
     } 
     else {

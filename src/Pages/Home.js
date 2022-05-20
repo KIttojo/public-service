@@ -31,7 +31,6 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 
 export default function HomePage({children, user = {name: '', role: ''}, setUser}) {
-  console.log("user=", user)
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
@@ -62,7 +61,6 @@ export default function HomePage({children, user = {name: '', role: ''}, setUser
 }
 
 const SidebarContent = ({ onClose, user}) => {
-  console.log("sidebar user=", user)
   return (
     <Box
       transition="3s ease"

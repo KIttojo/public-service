@@ -2,9 +2,7 @@ import { Box, Heading, Text, Button } from '@chakra-ui/react';
 import { useNavigate } from "react-router-dom";
 
 export default function NotFound(props) {
-  console.log("props=", props)
   let navigate  = useNavigate();
-  console.log("navigate =", navigate)
 
   return (
     <Box textAlign="center" py={10} px={6}>

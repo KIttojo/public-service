@@ -33,7 +33,6 @@ const HistoryCard = ({address, cost, createdAt, email, firstname, lastname, type
 
 const History = ({user}) => {
   const [items, setItems] = useState([1, 2, 3, 4]);
-  console.log('1111', items)
 
   useEffect(() => {
     axios.get('http://localhost:8080/api/invoices', {
@@ -44,7 +43,6 @@ const History = ({user}) => {
       }
     })
       .then(res => setItems(res.data))
-      .catch(err => console.log(err))
   }, []);
 
   return (
