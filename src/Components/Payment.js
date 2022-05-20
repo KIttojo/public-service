@@ -26,6 +26,7 @@ const initFormField = {
 
 export default function Payment({rates}) {
   const navigate = useNavigate();
+  console.log("rates=", rates)
 
   const userData = JSON.parse(localStorage.getItem('user-data')).user;
   const {firstName, lastName, address} = userData;
@@ -48,34 +49,61 @@ export default function Payment({rates}) {
       });
   },[]);
 
-
-  const calulateTotalPrice = () => {
+  useEffect(() => {
     let totalPrice = 0;
     for (const item of formData.states) {
       totalPrice += item.cost; 
     }
     setTotal(totalPrice);
-  }
+    console.log("totalPrice NOW", total)
+  }, [formData.states]);
 
-  const calculateCost = (type, value) => {
+  useEffect(() => {
+    if (total < 1 || isNaN(total)) setHasError(true);
+  }, [total]);
+
+  const calculateCost = (type, value = 0) => {
+    if (!value) {
+      setHasError(true);
+      return 0
+    };
+
     const pastVal = pastValues[type];
     const typeRate = rates.find((elem) => elem.latinName === type);
-    if ((typeRate.price * (value - pastVal)) < 0) setHasError(true);
+
+    if ((typeRate.price * (value - pastVal)) < 0 || value <= pastVal) setHasError(true);
     else setHasError(false);
+
     return typeRate.price * (value - pastVal);
   }
 
   const updateForm = (type, value, key, id) => {
+    console.log("rat222es=", rates)
+    // const rate = rates.find((elem) => elem.latinName === type);
+    // console.log("RATE=", rate)
+
     setFormData(prev => {
       if (type === 'states') {
+        // const rate = rates.find((elem) => elem.latinName === type);
         const isKey = key === 'key';
         let newStates = [...prev.states];
         const newItem = {
           type: isKey ? value : newStates[id].type,
           value: isKey ? newStates[id].value : value,
         }
-        newItem.cost = newItem.type && newItem.value ? calculateCost(newItem.type, newItem.value) : 0;
+
+        if (newItem.type && newItem.value) {
+          const rate = rates.find((elem) => elem.latinName === type);
+          if (rate?.atomic) {
+            newItem.cost = rate.price;
+          } else {
+            newItem.cost = newItem.type && newItem.value ? calculateCost(newItem.type, newItem.value) : 0;
+          }
+  
+        }
+
         newStates[id] = newItem;
+        console.log("newItem=", newItem)
         return {
           ...prev,
           [type] : newStates
@@ -109,14 +137,13 @@ export default function Payment({rates}) {
 
   const handleSublit = () => {
     let errorsCount = 0;
-    calulateTotalPrice();
-
     for (let i = 0; i < formData.states.length; i++) {
       const element = formData.states[i];
       if (element.type.length < 1) errorsCount = errorsCount + 1;
     }
+    console.log('total', total)
 
-    if (errorsCount > 0) {
+    if (errorsCount > 0 && total > 0) {
       setHasError(true);
       setShowPayment(false);
     } else {
@@ -177,7 +204,11 @@ export default function Payment({rates}) {
           </Flex>
 
           {(!showPayment || hasError) && (
-            <Button colorScheme={'blue'} variant={'solid'} onClick={handleSublit}>
+            <Button 
+              isDisabled={total < 1 || isNaN(total)}
+              colorScheme={'blue'} 
+              variant={'solid'} 
+              onClick={handleSublit}>
               Ввести реквизиты
             </Button>
           )}
