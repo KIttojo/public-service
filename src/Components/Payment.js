@@ -42,6 +42,16 @@ export default function Payment({rates}) {
   const [showPayment, setShowPayment] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [total, setTotal] = useState(0);
+  const [pastValues, setPastValues] = useState({});
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/pastValues', {
+      headers: { 'x-access-token': localStorage.getItem('token')}
+    })
+      .then((res) => {
+        setPastValues(res.data.values);
+      });
+  },[]);
 
   console.log("FORM=", formData.states);
 
@@ -54,8 +64,12 @@ export default function Payment({rates}) {
   }
 
   const calculateCost = (type, value) => {
+    const pastVal = pastValues[type];
+    console.log(pastVal);
     const typeRate = rates.find((elem) => elem.latinName === type);
-    return typeRate.price * value;
+    if ((typeRate.price * (value - pastVal)) < 0) setHasError(true);
+    else setHasError(false);
+    return typeRate.price * (value - pastVal);
   }
 
   const updateForm = (type, value, key, id) => {
@@ -171,7 +185,7 @@ export default function Payment({rates}) {
               </FormControl>
               <FormControl maxW='140'>
                 <FormLabel htmlFor='amount'>Значение</FormLabel>
-                <NumberInput defaultValue={10} max={100000} min={10} onChange={val => updateForm('states', val, 'value', id)}>
+                <NumberInput defaultValue={1} max={100000} min={1} onChange={val => updateForm('states', val, 'value', id)}>
                   <NumberInputField id='amount'/>
                   <NumberInputStepper>
                     <NumberIncrementStepper />
