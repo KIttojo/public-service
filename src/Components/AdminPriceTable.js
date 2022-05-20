@@ -24,22 +24,14 @@ const PriceTable = () => {
       headers: {
         'x-access-token': localStorage.getItem('token'),
       },
-      params: {
-        latinName: '',
-        price: ''
-      }
     })
       .then((res) => {
-        console.log("OK");
+        setFields(res.data.rates);
     })
   }, []);
 
-  const updateFields = (type, value) => {
-
-  }
-
-  const pusData = () => {
-    axios.put('http://localhost:8080/api/rates', {
+  const pushData = () => {
+    axios.put('http://localhost:8080/api/rates', { rates: fields }, {
       headers: {
         'x-access-token': localStorage.getItem('token'),
       }
@@ -47,6 +39,13 @@ const PriceTable = () => {
       .then((res) => {
         setFields(res.data.rates);
     })
+  }
+
+  const handleInput = (value, item) => {
+    const items = [...fields];
+    let itemNew = items.find((it) => it.latinName === item.latinName);
+    itemNew.price = value;
+    setFields(items);
   }
 
   return (
@@ -66,13 +65,13 @@ const PriceTable = () => {
               return (
                 <Tr key={_id}>
                   <Td>
-                    <Editable maxW='100px' defaultValue={cyrillicName}>
+                    <Editable isDisabled maxW='100px' defaultValue={cyrillicName}>
                       <EditablePreview />
                       <EditableInput />
                     </Editable>
                   </Td>
                   <Td isNumeric>
-                    <Editable maxW='120px' defaultValue={price}>
+                    <Editable maxW='120px' defaultValue={price} onChange={value => handleInput(value, item)}>
                       <EditablePreview />
                       <EditableInput />
                     </Editable>
@@ -83,7 +82,7 @@ const PriceTable = () => {
           </Tbody>
         </Table>
       </TableContainer>
-      <Button my='20px' colorScheme='blue'>Внести изменения</Button>
+      <Button my='20px' colorScheme='blue' onClick={pushData}>Внести изменения</Button>
     </Flex>
   );
 }
