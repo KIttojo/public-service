@@ -11,13 +11,15 @@ import {
   Heading
 } from '@chakra-ui/react';
 
-const HistoryCard = ({address, cost, createdAt, email, firstname, lastname, type, value}) => {
+const HistoryCard = ({address, cost, createdAt, email, firstname, lastname, type, value, rates}) => {
   return (
     <Box p='4' my='3' maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden'>
       <UnorderedList>
         <ListItem>Адрес: {address}</ListItem>
         <ListItem>Тип показания: {type}</ListItem>
-        <ListItem>Измерения {value}</ListItem>
+        {
+          !rates.filter((elem) => elem.latinName === type)[0]?.atomic && <ListItem>Измерения {value}</ListItem>
+        }
         <ListItem>Оплачено</ListItem>
       </UnorderedList>
       <Box mt='4'>
@@ -31,7 +33,7 @@ const HistoryCard = ({address, cost, createdAt, email, firstname, lastname, type
   );
 };
 
-const History = ({user}) => {
+const History = ({user, rates}) => {
   const [items, setItems] = useState([1, 2, 3, 4]);
 
   useEffect(() => {
@@ -58,7 +60,8 @@ const History = ({user}) => {
             firstname={item.firstname} 
             lastname={item.lastname} 
             type={item.type} 
-            value={item.value}/>
+            value={item.value}
+            rates={rates}/>
         </React.Fragment>
       })}
     </Box>
