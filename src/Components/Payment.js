@@ -81,10 +81,12 @@ export default function Payment({rates}) {
     const pastVal = pastValues[type];
     const typeRate = rates.find((elem) => elem.latinName === type);
 
-    if ((typeRate.price * (value - pastVal)) < 0 || value <= pastVal) setHasError(true);
-    else setHasError(false);
-
-    return typeRate.price * (value - pastVal);
+    if (pastVal) {
+      if ((typeRate.price * (value - pastVal)) < 0 || value <= pastVal) setHasError(true);
+      else setHasError(false);
+      return typeRate.price * (value - pastVal);
+    }
+    return typeRate.price * value;
   }
 
   const updateForm = (type, value, key, id) => {
