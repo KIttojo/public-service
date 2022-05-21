@@ -52,7 +52,7 @@ export default function Payment({rates}) {
   
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/pastValues', {
+    axios.get('https://backend-public-servis.herokuapp.com/api/pastValues', {
       headers: { 'x-access-token': localStorage.getItem('token')}
     })
       .then((res) => {
@@ -159,7 +159,7 @@ export default function Payment({rates}) {
   }
 
   const handlePayment = () => {
-    axios.post('http://localhost:8080/api/invoices',
+    axios.post('https://backend-public-servis.herokuapp.com/api/invoices',
         {
           invoices: formData.states,
         },

@@ -37,7 +37,7 @@ const History = ({user, rates}) => {
   const [items, setItems] = useState([1, 2, 3, 4]);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/invoices', {
+    axios.get('https://backend-public-servis.herokuapp.com/api/invoices', {
       headers: { 'x-access-token': localStorage.getItem('token')},
       params: {
         role: user.role,

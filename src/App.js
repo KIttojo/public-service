@@ -21,7 +21,7 @@ function App() {
     if (!user.name) setIsLoggedIn(false);
     if (user.name) {
       setIsLoggedIn(true);
-      axios.get('http://localhost:8080/api/rates', {
+      axios.get('https://backend-public-servis.herokuapp.com/api/rates', {
         headers: {
           'x-access-token': localStorage.getItem('token'),
         }
@@ -31,7 +31,7 @@ function App() {
       })
     } 
     else {
-      axios.get('http://localhost:8080/checkToken', {
+      axios.get('https://backend-public-servis.herokuapp.com/checkToken', {
       headers: {
         'x-access-token': localStorage.getItem('token'),
       }

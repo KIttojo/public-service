@@ -51,7 +51,7 @@ const Admin = () => {
   const [items, setItems] = useState([1, 2, 3, 4]);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/invoices', {
+    axios.get('https://backend-public-servis.herokuapp.com/api/invoices', {
       headers: { 'x-access-token': localStorage.getItem('token')},
     })
       .then(res => setItems(res.data))
