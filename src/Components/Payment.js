@@ -26,7 +26,6 @@ const initFormField = {
 
 export default function Payment({rates}) {
   const navigate = useNavigate();
-  console.log("rates=", rates)
 
   const userData = JSON.parse(localStorage.getItem('user-data')).user;
   const {firstName, lastName, address} = userData;
@@ -39,6 +38,18 @@ export default function Payment({rates}) {
   const [hasError, setHasError] = useState(false);
   const [total, setTotal] = useState(0);
   const [pastValues, setPastValues] = useState({});
+
+  const [allowedSelectors, setAllowedSelectors] = useState([
+    'Вода',
+    'Электричество',
+    'Газ',
+    'Домофон',
+    'Плата за капитальный ремонт',
+    'Обслуживание лифта',
+    'Вывоз мусора',
+    'Центральное отопление',
+  ]);
+  
 
   useEffect(() => {
     axios.get('http://localhost:8080/api/pastValues', {
@@ -55,7 +66,6 @@ export default function Payment({rates}) {
       totalPrice += item.cost; 
     }
     setTotal(totalPrice);
-    console.log("totalPrice NOW", total)
   }, [formData.states]);
 
   useEffect(() => {
@@ -78,13 +88,9 @@ export default function Payment({rates}) {
   }
 
   const updateForm = (type, value, key, id) => {
-    console.log("rat222es=", rates)
-    // const rate = rates.find((elem) => elem.latinName === type);
-    // console.log("RATE=", rate)
 
     setFormData(prev => {
       if (type === 'states') {
-        // const rate = rates.find((elem) => elem.latinName === type);
         const isKey = key === 'key';
         let newStates = [...prev.states];
         const newItem = {
@@ -93,17 +99,16 @@ export default function Payment({rates}) {
         }
 
         if (newItem.type && newItem.value) {
-          const rate = rates.find((elem) => elem.latinName === type);
-          if (rate?.atomic) {
+          const rate = rates.find((elem) => elem.latinName === newItem.type);
+          if (rate.atomic) {
             newItem.cost = rate.price;
+            newItem.atomic = true;
           } else {
             newItem.cost = newItem.type && newItem.value ? calculateCost(newItem.type, newItem.value) : 0;
           }
-  
         }
 
         newStates[id] = newItem;
-        console.log("newItem=", newItem)
         return {
           ...prev,
           [type] : newStates
@@ -141,9 +146,8 @@ export default function Payment({rates}) {
       const element = formData.states[i];
       if (element.type.length < 1) errorsCount = errorsCount + 1;
     }
-    console.log('total', total)
 
-    if (errorsCount > 0 && total > 0) {
+    if (errorsCount > 0 && total < 1) {
       setHasError(true);
       setShowPayment(false);
     } else {
@@ -183,9 +187,9 @@ export default function Payment({rates}) {
           </FormControl>
 
           {formData.states.map((item, id) => {
-            console.log(pastValues[item.type])
             return (
-              <FormField 
+              <FormField
+                allowedSelectors={allowedSelectors} 
                 item={item} 
                 id={id} 
                 updateForm={updateForm}

@@ -11,15 +11,17 @@ import {
   Stack,
 } from '@chakra-ui/react';
 
-const FormField = ({item, id, updateForm, pastValues, formData}) => {
+const FormField = ({item, id, updateForm, pastValues, formData, allowedSelectors}) => {
   const [fieldData, setFieldData] = useState(1);
-  console.log("item=", item)
 
   useEffect(() => {
     const type = formData.states[id].type;
-    const prevCount = pastValues[type];
-
-    setFieldData(prevCount);
+    const prevCount = pastValues[type] || 1;
+    if (prevCount) {
+      setFieldData(prevCount);
+    } else {
+      setFieldData(1);
+    }
   }, [updateForm]);
 
   return (
@@ -30,20 +32,24 @@ const FormField = ({item, id, updateForm, pastValues, formData}) => {
         justify={'space-between'}>
         <FormControl>
           <FormLabel htmlFor='country'>Тип показания</FormLabel>
-          <Select 
-            id='country' 
-            placeholder='Выберите тип' 
-            onChange={(e) => updateForm('states', e.target.value, 'key', id)}>
-            <option >Газ</option>
-            <option >Электричество</option>
-            <option >Вода</option>
-            <option >Домофон</option>
-          </Select>
+            <Select 
+              id='country' 
+              placeholder='Выберите тип' 
+              onChange={(e) => updateForm('states', e.target.value, 'key', id)}>
+              {allowedSelectors.map((item) => {
+                if (!formData.states.find((state) => state.type === item)){
+                  return <option>{item}</option>
+                } else {
+                  return <option disabled>{item}</option>
+                }
+              })}
+            </Select>
         </FormControl>
-
         <FormControl maxW='140'>
           <FormLabel htmlFor='amount'>Значение</FormLabel>
-          <NumberInput 
+          <NumberInput
+            isDisabled={item?.atomic}
+            value={item?.atomic ? 1 : undefined} 
             defaultValue={0}
             max={100000}
             min={fieldData || 1}
@@ -64,7 +70,7 @@ const FormField = ({item, id, updateForm, pastValues, formData}) => {
         </FormControl>
       </Stack>
 
-      {fieldData && (
+      {(fieldData && !item.atomic) && (
         <NumberInput 
           isDisabled={true}
           value={`За прошлый месяц по счетчику ${fieldData}`}>
