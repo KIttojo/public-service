@@ -39,7 +39,7 @@ export default function Payment({rates}) {
   const [total, setTotal] = useState(0);
   const [pastValues, setPastValues] = useState({});
 
-  const [allowedSelectors, setAllowedSelectors] = useState([
+  const allowedSelectors = [
     'Вода',
     'Электричество',
     'Газ',
@@ -48,7 +48,7 @@ export default function Payment({rates}) {
     'Обслуживание лифта',
     'Вывоз мусора',
     'Центральное отопление',
-  ]);
+  ];
   
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function Payment({rates}) {
     })
       .then((res) => {
         setPastValues(res.data.values);
-      });
+      })
   },[]);
 
   useEffect(() => {
@@ -167,7 +167,7 @@ export default function Payment({rates}) {
           headers: { 'x-access-token': localStorage.getItem('token') },
         }
       )
-      .then(res => {
+      .then(() => {
         navigate('/');
       })
   };
@@ -190,14 +190,16 @@ export default function Payment({rates}) {
 
           {formData.states.map((item, id) => {
             return (
-              <FormField
-                allowedSelectors={allowedSelectors} 
-                item={item} 
-                id={id} 
-                updateForm={updateForm}
-                pastValues={pastValues}
-                formData={formData}
-              />
+              <React.Fragment key={`stack-${id}`}>
+                <FormField
+                  allowedSelectors={allowedSelectors} 
+                  item={item} 
+                  id={id} 
+                  updateForm={updateForm}
+                  pastValues={pastValues}
+                  formData={formData}
+                />
+              </React.Fragment>
             );
           }
           )}

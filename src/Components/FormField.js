@@ -36,11 +36,11 @@ const FormField = ({item, id, updateForm, pastValues, formData, allowedSelectors
               id='country' 
               placeholder='Выберите тип' 
               onChange={(e) => updateForm('states', e.target.value, 'key', id)}>
-              {allowedSelectors.map((item) => {
+              {allowedSelectors.map((item, id) => {
                 if (!formData.states.find((state) => state.type === item)){
-                  return <option>{item}</option>
+                  return <option key={`selector-${id}`}>{item}</option>
                 } else {
-                  return <option disabled>{item}</option>
+                  return <option key={`selector-${id}`} disabled>{item}</option>
                 }
               })}
             </Select>

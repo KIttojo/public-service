@@ -11,7 +11,7 @@ import {
   Heading
 } from '@chakra-ui/react';
 
-const HistoryCard = ({address, cost, createdAt, email, firstname, lastname, type, value, rates}) => {
+const HistoryCard = ({address, cost, createdAt, type, value, rates}) => {
   return (
     <Box p='4' my='3' maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden'>
       <UnorderedList>
