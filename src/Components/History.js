@@ -18,7 +18,7 @@ const HistoryCard = ({address, cost, createdAt, email, firstname, lastname, type
         <ListItem>Адрес: {address}</ListItem>
         <ListItem>Тип показания: {type}</ListItem>
         {
-          !rates.filter((elem) => elem.latinName === type)[0]?.atomic && <ListItem>Измерения {value}</ListItem>
+          rates && !rates.filter((elem) => elem.latinName === type)[0]?.atomic && <ListItem>Измерения {value}</ListItem>
         }
         <ListItem>Оплачено</ListItem>
       </UnorderedList>
