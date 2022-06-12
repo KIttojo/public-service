@@ -27,7 +27,7 @@ export default function SimpleCard({setUser}) {
   const handleSumbit = (e) => {
     e.preventDefault();
     axios({
-      url: "https://backend-public-servis.herokuapp.com/api/authenticate",
+      url: "https://backend-public-service.herokuapp.com/api/authenticate",
       method: "post",
       data: JSON.stringify({
         email: email,

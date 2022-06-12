@@ -35,7 +35,7 @@ export default function SignupCard() {
   const handleSumbit = (e) => {
     e.preventDefault();
     axios({
-      url: "https://backend-public-servis.herokuapp.com/api/register",
+      url: "https://backend-public-service.herokuapp.com/api/register",
       method: "post",
       data: JSON.stringify({
         email: email,

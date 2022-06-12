@@ -20,7 +20,7 @@ const PriceTable = () => {
   const [fields, setFields] = useState([]);
 
   useEffect(() => {
-    axios.get('https://backend-public-servis.herokuapp.com/api/rates', {
+    axios.get('https://backend-public-service.herokuapp.com/api/rates', {
       headers: {
         'x-access-token': localStorage.getItem('token'),
       },
@@ -31,7 +31,7 @@ const PriceTable = () => {
   }, []);
 
   const pushData = () => {
-    axios.put('https://backend-public-servis.herokuapp.com/api/rates', { rates: fields }, {
+    axios.put('https://backend-public-service.herokuapp.com/api/rates', { rates: fields }, {
       headers: {
         'x-access-token': localStorage.getItem('token'),
       }
